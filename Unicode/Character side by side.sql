@@ -11,5 +11,5 @@ BEGIN
 	SET @counter = @counter + 1
 END
 
-SELECT UC, CAST(UC as CHAR(1)) as CharCast FROM #CharacterTemp
+SELECT UC as [NChar Unicode Character], CAST(UC as CHAR(1)) as [Attempted Cast As Char] FROM #CharacterTemp
 DROP TABLE #CharacterTemp

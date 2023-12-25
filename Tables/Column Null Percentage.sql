@@ -1,5 +1,5 @@
 -- Change this value to any table you're analyzing
-DECLARE @tableName NVARCHAR(100) = 'Leadinfo';
+DECLARE @tableName NVARCHAR(100) = '';
 
 DECLARE @sqlStatement NVARCHAR(MAX);
 DECLARE @totalRows INT;
@@ -7,6 +7,7 @@ DECLARE @ParmDefinition nvarchar(500);
 DECLARE @columnName nvarchar(50);
 DECLARE @rowCount INT;
 
+DROP TABLE IF EXISTS #columnNames
 CREATE TABLE #columnNames
 (
 	columnName nvarchar(50) NOT NULL,
@@ -18,6 +19,13 @@ FROM sys.all_columns ac
 WHERE ac.object_id = (SELECT object_id FROM sys.tables WHERE name = @tableName)
 	AND ac.is_nullable = 1
 ORDER BY name
+
+SELECT @rowCount = COUNT(*) FROM #columnNames
+IF ( @rowCount = 0)
+BEGIN
+	RAISERROR (N'The table %s has no nullable rows', 15, 1, @tableName);
+	RETURN
+END
 
 SET @sqlStatement = N'select @retvalOUT = COUNT(*) from ' + @tableName + ' (NOLOCK)'
 SET @ParmDefinition = N'@retvalOUT int OUTPUT';
@@ -41,6 +49,7 @@ END
 CLOSE columnCursor
 DEALLOCATE columnCursor
 
+PRINT @SqlStatement
 SET @SqlStatement = 'SELECT ' + LEFT(@SqlStatement, len(@SqlStatement) - 1) + ' FROM ' + @tableName;
 
 EXEC sp_executesql @sqlStatement, @ParmDefinition, @retvalOUT=@totalRows OUTPUT;

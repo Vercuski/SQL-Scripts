@@ -1,5 +1,5 @@
-DECLARE @TableName varchar(50) = '[googleads].[factadgroupads]'
-DECLARE @ColumnName varchar(50) = 'Ad_group_id'
+DECLARE @TableName varchar(50) = ''
+DECLARE @ColumnName varchar(50) = ''
 
 DECLARE @SQL nvarchar(1000) = '
 DECLARE @TotalValueCount INT 
